@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Cinema • Portal</title>
+    <title>DramaBox Personal Edition</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     
@@ -13,449 +13,494 @@
 
     <style>
         :root {
-            --bg-color: #08080a;
-            --accent-color: #bb86fc; /* Warna Neon Violet */
-            --text-color: #e0e0e0;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.07);
-            --font-family: 'Poppins', sans-serif;
-            --sidebar-width: 350px;
+            --bg-main: #0b0b0e;
+            --bg-card: #16161e;
+            --accent: #ff3e6c; /* Warna Khas DramaBox (Neon Pink/Red) */
+            --accent-gradient: linear-gradient(135deg, #ff3e6c 0%, #ff6b4a 100%);
+            --text-main: #ffffff;
+            --text-muted: #8a8a93;
+            --nav-height: 70px;
         }
 
-        body, html {
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            height: 100%;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-family);
-            overflow: hidden; /* Mencegah scroll double */
         }
 
-        /* Dynamic Background dengan efek blur */
-        #dynamic-bg {
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        /* --- NAVIGATION BAR --- */
+        header {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #1a1a2e 0%, #08080a 100%);
-            z-index: -2;
-            transition: background 1s ease;
-        }
-        
-        #ambient-glow {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%; height: 80%;
-            background: var(--accent-color);
-            filter: blur(150px);
-            opacity: 0.1;
-            z-index: -1;
-            transition: background 1s ease, opacity 0.5s ease;
-        }
-
-        /* Layout Utama */
-        .app-wrapper {
+            top: 0; left: 0; width: 100%;
+            height: var(--nav-height);
+            background: linear-gradient(to bottom, rgba(11,11,14,0.95) 80%, rgba(11,11,14,0) 100%);
+            backdrop-filter: blur(10px);
             display: flex;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        /* Area Video Utama */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 40px;
-            padding-right: calc(var(--sidebar-width) + 20px); /* Ruang untuk sidebar */
-            transition: all 0.5s ease;
-        }
-        
-        /* Judul Video di atas player */
-        #now-playing-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            align-self: flex-start;
-            opacity: 0.8;
+            justify-content: space-between;
+            padding: 0 4%;
+            z-index: 100;
         }
 
-        .player-container {
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a.active, .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        /* --- HERO BANNER (Top Featured) --- */
+        .hero-section {
             width: 100%;
-            max-width: 1100px;
-            aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-            border: 1px solid var(--glass-border);
+            height: 70vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 4%;
+            background: linear-gradient(to bottom, rgba(11,11,14,0.2) 0%, rgba(11,11,14,1) 95%), 
+                        radial-gradient(circle at 80% 30%, rgba(255, 62, 108, 0.15) 0%, transparent 50%),
+                        url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925&auto=format&fit=crop') center/cover;
+            margin-bottom: 20px;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--accent-gradient);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .hero-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .btn-play {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 30px;
+            background: var(--text-main);
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 30px;
+            transition: transform 0.2s, background 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-play:hover {
+            transform: scale(1.05);
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* --- STREAMING ROWS (Dramabox Horizontal Style) --- */
+        .content-container {
+            padding: 0 4%;
+        }
+
+        .row-section {
+            margin-bottom: 40px;
             position: relative;
         }
-        
-        /* Iframe styling untuk mode embed */
-        #embed-player {
-            width: 100%; height: 100%; border: none; display: none;
-        }
 
-        /* Sidebar - Glassmorphism */
-        .sidebar {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            bottom: 20px;
-            width: var(--sidebar-width);
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 10;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .sidebar-header {
-            padding: 25px;
-            border-bottom: 1px solid var(--glass-border);
+        .row-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
-            gap: 15px;
-        }
-        
-        .sidebar-header i {
-            font-size: 1.8rem;
-            color: var(--accent-color);
+            gap: 10px;
         }
 
-        .sidebar-header h1 {
-            margin: 0;
-            font-size: 1.2rem;
+        .row-title i {
+            color: var(--accent);
+        }
+
+        .cards-slider {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .cards-slider::-webkit-scrollbar {
+            height: 5px;
+        }
+        .cards-slider::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        /* DramaBox Vertical Card Ratio 3:4 */
+        .drama-card {
+            flex: 0 0 180px;
+            aspect-ratio: 3/4;
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .drama-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(255, 62, 108, 0.2);
+            border-color: rgba(255, 62, 108, 0.3);
+        }
+
+        .card-thumbnail {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            background: linear-gradient(45deg, #1f1f2e, #111);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            padding: 30px 12px 12px 12px;
+            background: linear-gradient(to top, rgba(11,11,14,0.95) 0%, rgba(11,11,14,0.5) 60%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 10px; left: 10px;
+            padding: 3px 8px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            border-radius: 6px;
+            font-size: 0.65rem;
             font-weight: 600;
-            letter-spacing: 1px;
+            color: var(--accent);
             text-transform: uppercase;
         }
 
-        .video-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-        }
-        
-        /* Custom Scrollbar untuk sidebar */
-        .video-list::-webkit-scrollbar { width: 6px; }
-        .video-list::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 3px; }
-
-        /* Item List Video */
-        .video-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-            position: relative;
-        }
-
-        .video-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            transform: translateX(-5px);
-        }
-
-        .video-item.active {
-            background: rgba(187, 134, 252, 0.1);
-            border: 1px solid rgba(187, 134, 252, 0.3);
-        }
-        
-        .video-item.active::before {
-            content: '';
-            position: absolute;
-            left: -5px; top: 50%; transform: translateY(-50%);
-            height: 60%; width: 3px;
-            background-color: var(--accent-color);
-            border-radius: 3px;
-            box-shadow: 0 0 10px var(--accent-color);
-        }
-
-        .icon-box {
-            width: 45px; height: 45px;
-            border-radius: 10px;
-            background: rgba(255,255,255, 0.03);
-            display: flex; align-items: center; justify-content: center;
-            margin-right: 15px;
-            border: 1px solid var(--glass-border);
-        }
-        
-        .video-item.active .icon-box {
-            background: rgba(187, 134, 252, 0.1);
-            border-color: rgba(187, 134, 252, 0.2);
-        }
-
-        .icon-box i {
-            font-size: 1.4rem;
-            opacity: 0.7;
-        }
-        
-        .video-item.active .icon-box i {
-            color: var(--accent-color);
-            opacity: 1;
-        }
-
-        .video-info {
-            flex: 1;
-        }
-
-        .video-title {
-            font-size: 0.95rem;
-            font-weight: 400;
-            margin-bottom: 2px;
-            color: rgba(255,255,255,0.8);
-            /* Truncate text jika kepanjangan */
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            line-height: 1.3;
+            color: #fff;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        
-        .video-item.active .video-title {
-            color: #fff;
-            font-weight: 600;
+
+        /* --- IMMERSIVE THEATER MODAL PLAYER --- */
+        .player-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(5, 5, 7, 0.98);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .video-type {
-            font-size: 0.75rem;
+        .modal-container {
+            width: 90%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .btn-close-modal {
+            position: absolute;
+            top: -50px; right: 0;
+            background: none; border: none;
+            color: #fff; font-size: 2rem;
+            cursor: pointer; opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .btn-close-modal:hover { opacity: 1; color: var(--accent); }
+
+        .video-wrapper {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #modal-embed-player { width: 100%; height: 100%; border: none; display: none; }
+        #modal-html5-player { width: 100%; height: 100%; display: none; }
+
+        .modal-video-info h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+        .modal-video-info p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            opacity: 0.5;
         }
 
-        /* Mode Bioskop: Sembunyikan sidebar saat mouse tidak bergerak */
-        body.cinema-mode .sidebar {
-            opacity: 0;
-            transform: translateX(100px);
-            pointer-events: none;
-        }
-        
-        body.cinema-mode .main-content {
-            padding-right: 40px; /* Kembalikan padding */
-        }
-        
-        body.cinema-mode #ambient-glow {
-            opacity: 0.2; /* Sedikit lebih terang di mode bioskop */
-        }
-
-        /* Customization untuk Plyr agar serasi */
-        .plyr--full-ui input[type=range] {
-            color: var(--accent-color);
-        }
-        .plyr__control--overlaid {
-            background: rgba(187, 134, 252, 0.5);
-        }
-        .plyr__controls {
-            background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.7)) !important;
-            padding-top: 20px !important;
-        }
-        .plyr--video {
-            border-radius: 16px;
-        }
-
-        /* Responsif Mobile */
-        @media (max-width: 900px) {
-            .app-wrapper {
-                flex-direction: column;
-            }
-            .main-content {
-                padding: 15px;
-                padding-right: 15px;
-                height: 40vh; /* Video di atas */
-                flex: none;
-            }
-            .sidebar {
-                position: relative;
-                top: 0; right: 0; bottom: 0;
-                width: auto;
-                flex: 1;
-                margin: 15px;
-                border-radius: 16px;
-            }
-            #now-playing-title { font-size: 1.1rem; margin-bottom: 10px; }
-            body.cinema-mode .sidebar {
-                transform: translateY(50px);
-            }
+        /* Responsif Mobile Layout ala Web App Dramabox */
+        @media (max-width: 768px) {
+            .hero-section { height: 50vh; }
+            .hero-title { font-size: 2rem; }
+            .drama-card { flex: 0 0 135px; }
+            .nav-links { display: none; } /* Sembunyikan link di mobile untuk menyederhanakan */
+            .modal-container { width: 95%; }
         }
     </style>
 </head>
 <body>
 
-    <div id="dynamic-bg"></div>
-    <div id="ambient-glow"></div>
+    <header>
+        <div class="logo">DRAMABOX<span style="color:#fff;">.ID</span></div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#">Short Dramas</a></li>
+            <li><a href="#">My List</a></li>
+        </ul>
+    </header>
 
-    <div class="app-wrapper">
-        <main class="main-content">
-            <div id="now-playing-title">Pilih Video...</div>
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <span class="hero-tag">Trending #1</span>
+            <h1 class="hero-title" id="heroTitle">Cinema Portal</h1>
+            <p class="hero-desc" id="heroDesc">Selamat datang di ruang pemutaran film privat. Tonton koleksi Google Drive terintegrasi dan link kurasi eksternal terbaik di sini.</p>
+            <div class="btn-play" id="heroPlayBtn"><i class="ri-play-fill"></i> Mulai Menonton</div>
+        </div>
+    </section>
+
+    <main class="content-container">
+        
+        <section class="row-section">
+            <h2 class="row-title"><i class="ri-google-fill"></i> Google Drive Cloud Movies</h2>
+            <div class="cards-slider" id="driveRow">
+                <div style="padding: 20px; color: var(--text-muted);">Menghubungkan ke Drive...</div>
+            </div>
+        </section>
+
+        <section class="row-section">
+            <h2 class="row-title"><i class="ri-youtube-line"></i> Web & YouTube Streams</h2>
+            <div class="cards-slider" id="webRow">
+                <div style="padding: 20px; color: var(--text-muted);">Memuat database link...</div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="player-modal" id="playerModal">
+        <div class="modal-container">
+            <button class="btn-close-modal" id="closeModalBtn"><i class="ri-close-line"></i></button>
             
-            <div class="player-container">
-                <video id="player" playsinline controls></video>
-                
-                <iframe id="embed-player" allowfullscreen></iframe>
+            <div class="video-wrapper">
+                <video id="modal-html5-player" playsinline controls></video>
+                <iframe id="modal-embed-player" allowfullscreen></iframe>
             </div>
-        </main>
 
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <i class="ri-play-list-2-line"></i>
-                <h1>Library</h1>
+            <div class="modal-video-info">
+                <h2 id="modalVideoTitle">Judul Film</h2>
+                <p id="modalVideoType">Google Drive</p>
             </div>
-            <div class="video-list" id="videoList">
-                <div style="text-align:center; padding:20px; opacity:0.5;">Loading Library...</div>
-            </div>
-        </aside>
+        </div>
     </div>
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
     <script>
-        // MASUKKAN URL WEB APP GAS KAMU DISINI
+        // PASTE LINK WEB APP GAS RESMI MILIKMU DI SINI
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzIYUDU5Mbtdm78rwL0nJVkpeCqHctJFTyLlBPnjQQDe731OF9MhaSiOh9YN_rTmNnM-w/exec?action=getVideos';
-        
-        let player;
-        const playerEl = document.getElementById('player');
-        const embedPlayerEl = document.getElementById('embed-player');
-        const titleEl = document.getElementById('now-playing-title');
-        const glowEl = document.getElementById('ambient-glow');
 
-        // Inisialisasi Plyr
-        player = new Plyr('#player', {
+        let plyrPlayer;
+        const modal = document.getElementById('playerModal');
+        const html5PlayerEl = document.getElementById('modal-html5-player');
+        const embedPlayerEl = document.getElementById('modal-embed-player');
+        
+        // Inisialisasi Plyr Engine
+        plyrPlayer = new Plyr('#modal-html5-player', {
             controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'fullscreen'],
             ratio: '16:9'
         });
 
-        // Fetch Data dari GAS
+        // Ambil Data dari API Google Apps Script
         fetch(GAS_URL)
             .then(res => res.json())
             .then(data => {
-                const listContainer = document.getElementById('videoList');
-                listContainer.innerHTML = '';
+                const driveRow = document.getElementById('driveRow');
+                const webRow = document.getElementById('webRow');
                 
-                if (data.length === 0) {
-                    listContainer.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">Folder Drive kosong / belum diset.</div>';
-                    return;
-                }
-                
-                data.forEach((video, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'video-item';
-                    item.dataset.index = index;
-                    
-                    // Tentukan ikon berdasarkan tipe
-                    let icon = 'ri-video-line';
-                    if (video.type === 'youtube') icon = 'ri-youtube-line';
-                    if (video.type === 'drive') icon = 'ri-google-fill';
-                    if (video.type === 'embed') icon = 'ri-global-line';
+                // Clear state pemuatan awal
+                driveRow.innerHTML = '';
+                webRow.innerHTML = '';
 
-                    item.innerHTML = `
-                        <div class="icon-box"><i class="${icon}"></i></div>
-                        <div class="video-info">
-                            <div class="video-title">${video.title}</div>
-                            <div class="video-type">${video.type}</div>
+                let driveCount = 0;
+                let webCount = 0;
+
+                // Setup Hero Banner menggunakan item pertama yang ada
+                if(data.length > 0) {
+                    document.getElementById('heroTitle').innerText = data[0].title;
+                    document.getElementById('heroDesc').innerText = `Koleksi film seru bertipe ${data[0].type.toUpperCase()}. Siap diputar instan melalui portal awan privat Anda.`;
+                    document.getElementById('heroPlayBtn').onclick = () => openTheater(data[0]);
+                }
+
+                // Distribusikan Video ke Baris Kategori ala Dramabox
+                data.forEach(video => {
+                    // Buat Element Card
+                    const card = document.createElement('div');
+                    card.className = 'drama-card';
+                    
+                    // Gunakan huruf/inisial judul sebagai visual placeholder menarik layaknya poster minimalis
+                    const initialLetter = video.title.charAt(0).toUpperCase();
+                    
+                    card.innerHTML = `
+                        <div class="card-badge">${video.type}</div>
+                        <div class="card-thumbnail">
+                            <span style="font-size: 3.5rem; font-weight:700; opacity:0.1; font-family:'Poppins';">${initialLetter}</span>
+                        </div>
+                        <div class="card-overlay">
+                            <div class="card-title">${video.title}</div>
                         </div>
                     `;
-                    
-                    item.onclick = () => playVideo(video, item);
-                    listContainer.appendChild(item);
+
+                    card.onclick = () => openTheater(video);
+
+                    // Pisahkan baris berdasarkan sumbernya
+                    if (video.type === 'drive') {
+                        driveRow.appendChild(card);
+                        driveCount++;
+                    } else {
+                        webRow.appendChild(card);
+                        webCount++;
+                    }
                 });
+
+                // Fallback jika salah satu baris kosong
+                if(driveCount === 0) driveRow.innerHTML = '<div style="padding:20px; opacity:0.5;">Belum ada video di folder Google Drive Anda.</div>';
+                if(webCount === 0) webRow.innerHTML = '<div style="padding:20px; opacity:0.5;">Belum ada data link eksternal di Google Sheets.</div>';
+
             })
             .catch(err => {
-                document.getElementById('videoList').innerHTML = '<div style="text-align:center; padding:20px; color:#ff4444;">Error fetching data. Cek console.</div>';
-                console.error(err);
+                console.error("Gagal memuat API data video:", err);
             });
 
-        function playVideo(video, element) {
-            // Sembunyikan kedua player dulu
-            playerEl.style.display = 'none';
+        // FUNGSI MEMBUKA THEATER MODAL (IMERSIV ALA STREAMING APP)
+        function openTheater(video) {
+            // Reset Tampilan Player
+            html5PlayerEl.style.display = 'none';
             embedPlayerEl.style.display = 'none';
-            player.stop(); // Stop Plyr jika sedang putar sesuatu
+            plyrPlayer.stop();
+            embedPlayerEl.src = '';
 
-            // Update UI
-            titleEl.innerText = video.title;
-            
-            // Hapus class active dari item sebelumnya
-            document.querySelectorAll('.video-item').forEach(el => el.classList.remove('active'));
-            // Tambah class active ke item terpilih
-            element.classList.add('active');
-            
-            // Ganti warna ambient berdasarkan tipe (sebagai fallback sebelum fitur ambil warna video nyata)
-            updateAmbientColor(video.type);
+            // Update Teks Informasi Modal
+            document.getElementById('modalVideoTitle').innerText = video.title;
+            document.getElementById('modalVideoType').innerText = `Source Platform: ${video.type}`;
 
+            // Tampilkan Modal dengan animasi halus
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
+
+            // Kondisi engine player
             if (video.type === 'embed') {
-                // Gunakan Iframe Player
                 embedPlayerEl.style.display = 'block';
                 embedPlayerEl.src = video.url;
             } else {
-                // Gunakan Plyr (untuk Drive, HTML5, YouTube)
-                playerEl.style.display = 'block';
+                html5PlayerEl.style.display = 'block';
                 let sources = [];
-                let provider = 'html5';
 
                 if (video.type === 'youtube') {
                     sources = [{ src: video.url, provider: 'youtube' }];
                 } else if (video.type === 'drive') {
-                    // Direct Link Drive
-                    const directLink = `https://docs.google.com/uc?export=download&id=${video.url}`;
-                    sources = [{ src: directLink, type: 'video/mp4' }];
+                    const directDriveLink = `https://docs.google.com/uc?export=download&id=${video.url}`;
+                    sources = [{ src: directDriveLink, type: 'video/mp4' }];
                 }
-                
-                player.source = { type: 'video', title: video.title, sources: sources };
-                
-                // Auto play, seringkali diblokir browser modern, tapi kita coba.
-                setTimeout(() => { player.play(); }, 500);
-            }
-        }
-        
-        // Fungsi sederhana merubah warna glow berdasarkan tipe video
-        function updateAmbientColor(type) {
-            let color = '#bb86fc'; // Default Violet
-            if (type === 'youtube') color = '#ff0000';
-            if (type === 'drive') color = '#34a853';
-            if (type === 'embed') color = '#00bcd4';
-            
-            glowEl.style.background = color;
-        }
 
-        // --- FITUR CINEMA MODE (Auto Hide UI) ---
-        let cinemaTimeout;
-        const bodyEl = document.body;
+                plyrPlayer.source = {
+                    type: 'video',
+                    title: video.title,
+                    sources: sources
+                };
 
-        function showUI() {
-            bodyEl.classList.remove('cinema-mode');
-            clearTimeout(cinemaTimeout);
-            // Jika video sedang diputar, set timeout untuk sembunyikan lagi
-            if (player.playing || embedPlayerEl.style.display === 'block') {
-                cinemaTimeout = setTimeout(hideUI, 3000); // Sembunyikan setelah 3 detik diam
+                setTimeout(() => { plyrPlayer.play(); }, 500);
             }
         }
 
-        function hideUI() {
-            // Jangan sembunyikan jika mouse sedang di atas sidebar
-            if (document.querySelector('.sidebar:hover')) return;
-            bodyEl.classList.add('cinema-mode');
+        // FUNGSI MENUTUP MODAL PLAYER
+        document.getElementById('closeModalBtn').onclick = closeTheater;
+        
+        function closeTheater() {
+            modal.style.opacity = '0';
+            setTimeout(() => { 
+                modal.style.display = 'none'; 
+                plyrPlayer.stop();
+                embedPlayerEl.src = '';
+            }, 300);
         }
 
-        // Event listeners untuk deteksi pergerakan mouse
-        document.addEventListener('mousemove', showUI);
-        document.addEventListener('click', showUI);
-        document.addEventListener('touchstart', showUI);
-        
-        // Event listeners dari Plyr
-        player.on('play', () => { cinemaTimeout = setTimeout(hideUI, 2000); });
-        player.on('pause', () => { showUI(); });
-
+        // Tutup modal jika user klik area luar video player
+        modal.onclick = function(e) {
+            if(e.target === modal) {
+                closeTheater();
+            }
+        }
     </script>
 </body>
 </html>
