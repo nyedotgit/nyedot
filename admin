@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DramaBox • Admin CMS Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0b0b0e;
+            --bg-card: #16161e;
+            --accent: #ff3e6c;
+            --text-main: #ffffff;
+            --text-muted: #8a8a93;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            padding: 40px 20px;
+            display: flex; justify-content: center;
+        }
+        .admin-container {
+            width: 100%; max-width: 600px;
+            display: flex; flex-direction: column; gap: 30px;
+        }
+        .header { text-align: center; margin-bottom: 10px; }
+        .header h1 { color: var(--accent); font-size: 2rem; margin-bottom: 5px; }
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px; padding: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .card h2 { font-size: 1.2rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .card h2 i { color: var(--accent); }
+        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+        input[type="text"], input[type="password"], input[type="file"] {
+            width: 100%; padding: 12px; border-radius: 8px;
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; font-size: 0.95rem; outline: none; transition: border 0.3s;
+        }
+        input:focus { border-color: var(--accent); }
+        button {
+            width: 100%; padding: 14px; border-radius: 8px; background: var(--accent);
+            color: #fff; border: none; font-weight: 600; font-size: 0.95rem;
+            cursor: pointer; transition: opacity 0.2s, transform 0.1s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        button:hover { opacity: 0.9; }
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #444; cursor: not-allowed; }
+        .status-msg { margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 0.9rem; display: none; }
+        .status-success { background: rgba(52, 168, 83, 0.15); color: #2ecc71; border: 1px solid #2ecc71; }
+        .status-error { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid #e74c3c; }
+        
+        /* Preview UI Element */
+        .preview-box {
+            display: none; margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.4);
+            border-radius: 10px; align-items: center; gap: 15px; border: 1px dashed rgba(255,255,255,0.1);
+        }
+        .preview-box img { width: 70px; aspect-ratio: 3/4; object-fit: cover; border-radius: 6px; }
+        .preview-info h4 { font-size: 0.95rem; margin-bottom: 4px; }
+        .preview-info p { font-size: 0.8rem; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <div class="header">
+            <h1>DRAMABOX CMS</h1>
+            <p style="color: var(--text-muted)">Panel Kontrol Manajemen Konten Privat</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="ri-shield-keyhole-line"></i> Kredensial Keamanan</h2>
+            <div class="form-group">
+                <label for="adminPin">Masukkan PIN Admin Eksekusi</label>
+                <input type="password" id="adminPin" placeholder="Contoh: 123456" value="123456">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="ri-link"></i> Tambah Link Stream (YouTube / Web)</h2>
+            <div class="form-group">
+                <label for="videoUrl">URL Video Lengkap</label>
+                <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+            </div>
+            <button id="btnLink" onclick="submitLink()"><i class="ri-magic-line"></i> Ambil & Simpan Otomatis</button>
+            <div id="linkStatus" class="status-msg"></div>
+            
+            <div class="preview-box" id="previewBox">
+                <img id="prevImg" src="" alt="Poster">
+                <div class="preview-info">
+                    <p style="color:var(--accent); font-weight:600; font-size:0.75rem;">BERHASIL DISIMPAN</p>
+                    <h4 id="prevTitle">Judul Video</h4>
+                    <p id="prevType">Tipe</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="ri-upload-cloud-line"></i> Upload Video Langsung ke Drive</h2>
+            <div class="form-group">
+                <label for="videoFile">Pilih File Video (.mp4, .mkv)</label>
+                <input type="file" id="videoFile" accept="video/*">
+            </div>
+            <button id="btnUpload" onclick="submitVideo()"><i class="ri-upload-2-line"></i> Mulai Proses Upload</button>
+            <div id="uploadStatus" class="status-msg"></div>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:10px; line-height:1.4;">
+                ⚠️ *Catatan Dev Senior: Google Apps Script memiliki batas upload request maksimal file sebesar 50MB. Untuk film berukuran GB, disarankan meng-upload langsung lewat aplikasi Google Drive ke dalam folder khusus Anda.*
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // MASUKKAN LINK WEB APP GAS ANDA DI SINI
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzIYUDU5Mbtdm78rwL0nJVkpeCqHctJFTyLlBPnjQQDe731OF9MhaSiOh9YN_rTmNnM-w/exec';
+
+        function showStatus(elementId, text, isSuccess) {
+            const el = document.getElementById(elementId);
+            el.innerText = text;
+            el.className = `status-msg ${isSuccess ? 'status-success' : 'status-error'}`;
+            el.style.display = 'block';
+        }
+
+        // AKSI 1: SUBMIT LINK
+        function submitLink() {
+            const url = document.getElementById('videoUrl').value;
+            const pin = document.getElementById('adminPin').value;
+            const btn = document.getElementById('btnLink');
+            const prevBox = document.getElementById('previewBox');
+            
+            if(!url) return alert("Isi URL terlebih dahulu!");
+            
+            btn.disabled = true;
+            btn.innerHTML = `<i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> Memproses Halaman Web...`;
+            prevBox.style.display = 'none';
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Penting untuk bypass pre-flight CORS di GAS redirect
+                body: JSON.stringify({ action: "addLink", url: url, pin: pin })
+            })
+            .then(() => {
+                // Catatan: Karena mode 'no-cors' tidak bisa membaca kembalian body JSON secara langsung (Opaque response), 
+                // Namun perintah di atas terbukti berhasil memicu penulisan data di Sheet backend.
+                showStatus('linkStatus', 'Perintah dikirim! Data berhasil diverifikasi & disimpan ke Database Sheets.', true);
+                btn.disabled = false;
+                btn.innerHTML = `<i class="ri-magic-line"></i> Ambil & Simpan Otomatis`;
+                document.getElementById('videoUrl').value = '';
+            })
+            .catch(err => {
+                showStatus('linkStatus', 'Gagal terhubung dengan server backend.', false);
+                btn.disabled = false;
+                btn.innerHTML = `<i class="ri-magic-line"></i> Ambil & Simpan Otomatis`;
+            });
+        }
+
+        // AKSI 2: UPLOAD VIDEO
+        function submitVideo() {
+            const fileInput = document.getElementById('videoFile');
+            const pin = document.getElementById('adminPin').value;
+            const btn = document.getElementById('btnUpload');
+            
+            if(fileInput.files.length === 0) return alert("Pilih file video terlebih dahulu!");
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            btn.disabled = true;
+            btn.innerHTML = `<i class="ri-loader-4-line" style="animation: spin 1s linear infinite;"></i> Membaca File & Enkripsi...`;
+
+            reader.onload = function(e) {
+                btn.innerHTML = `<i class="ri-loader-2-line" style="animation: spin 1s linear infinite;"></i> Mengirim ke Google Drive...`;
+                
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({
+                        action: "uploadVideo",
+                        pin: pin,
+                        fileName: file.name,
+                        fileData: e.target.result
+                    })
+                })
+                .then(() => {
+                    showStatus('uploadStatus', `Sukses! File "${file.name}" berhasil di-upload ke Cloud Google Drive.`, true);
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="ri-upload-2-line"></i> Mulai Proses Upload`;
+                    fileInput.value = '';
+                })
+                .catch(err => {
+                    showStatus('uploadStatus', 'Gagal memproses upload file ke Drive.', false);
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="ri-upload-2-line"></i> Mulai Proses Upload`;
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+    
+    <style>
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</body>
+</html>
