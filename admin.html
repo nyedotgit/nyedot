@@ -177,30 +177,61 @@
             reader.onload = function(e) {
                 btn.innerHTML = `<i class="ri-loader-2-line" style="animation: spin 1s linear infinite;"></i> Mengirim ke Google Drive...`;
                 
-                fetch(GAS_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({
-                        action: "uploadVideo",
-                        pin: pin,
-                        fileName: file.name,
-                        fileData: e.target.result
-                    })
-                })
-                .then(() => {
-                    showStatus('uploadStatus', `Sukses! File "${file.name}" berhasil di-upload ke Cloud Google Drive.`, true);
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="ri-upload-2-line"></i> Mulai Proses Upload`;
-                    fileInput.value = '';
-                })
-                .catch(err => {
-                    showStatus('uploadStatus', 'Gagal memproses upload file ke Drive.', false);
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="ri-upload-2-line"></i> Mulai Proses Upload`;
-                });
-            };
-            reader.readAsDataURL(file);
+                // Ambil Data dari API Google Apps Script
+fetch(GAS_URL)
+    .then(res => {
+        if (!res.ok) throw new Error('Koneksi ke GAS gagal/Network error.');
+        return res.json();
+    })
+    .then(data => {
+        const driveRow = document.getElementById('driveRow');
+        const webRow = document.getElementById('webRow');
+        
+        driveRow.innerHTML = '';
+        webRow.innerHTML = '';
+
+        let driveCount = 0;
+        let webCount = 0;
+
+        if(data.length > 0) {
+            document.getElementById('heroTitle').innerText = data[0].title;
+            document.getElementById('heroDesc').innerText = `Koleksi film seru bertipe ${data[0].type.toUpperCase()}. Siap diputar instan melalui portal awan privat Anda.`;
+            document.getElementById('heroPlayBtn').onclick = () => openTheater(data[0]);
         }
+
+        data.forEach(video => {
+            const card = document.createElement('div');
+            card.className = 'drama-card';
+            
+            card.innerHTML = `
+                <div class="card-badge">${video.type}</div>
+                <img src="${video.poster}" class="card-thumbnail" alt="${video.title}" onerror="this.src='https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=500'">
+                <div class="card-overlay">
+                    <div class="card-title">${video.title}</div>
+                </div>
+            `;
+
+            card.onclick = () => openTheater(video);
+
+            if (video.type === 'drive') {
+                driveRow.appendChild(card);
+                driveCount++;
+            } else {
+                webRow.appendChild(card);
+                webCount++;
+            }
+        });
+
+        if(driveCount === 0) driveRow.innerHTML = '<div style="padding:20px; opacity:0.5;">Belum ada video di folder Google Drive Anda.</div>';
+        if(webCount === 0) webRow.innerHTML = '<div style="padding:20px; opacity:0.5;">Belum ada data link eksternal di Google Sheets.</div>';
+
+    })
+    .catch(err => {
+        // TAMPILKAN EROR LANGSUNG DI LAYAR JIKA GAGAL
+        document.getElementById('driveRow').innerHTML = `<div style="padding:20px; color:#ff3e6c;">Gagal memuat: ${err.message}</div>`;
+        document.getElementById('webRow').innerHTML = `<div style="padding:20px; color:#ff3e6c;">Pastikan GAS sudah di-deploy ulang dengan 'New Version'.</div>`;
+        console.error(err);
+    });
     </script>
     
     <style>
