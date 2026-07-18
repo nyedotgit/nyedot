@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Video Stream</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <style>
+        body { font-family: sans-serif; background: #121212; color: white; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .video-list { margin-top: 20px; display: grid; gap: 10px; }
+        .video-item { background: #222; padding: 15px; cursor: pointer; border-radius: 8px; }
+        .video-item:hover { background: #333; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Streaming Room Pribadi</h2>
+    
+    <div id="player-container">
+        <video id="player" playsinline controls></video>
+    </div>
+
+    <div class="video-list" id="videoList">Loading videos...</div>
+</div>
+
+<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+<script>
+    const player = new Plyr('#player');
+    const GAS_URL = 'URL_WEB_APP_GAS_KAMU_DISINI?action=getVideos';
+
+    // Ambil data dari backend GAS
+    fetch(GAS_URL)
+        .then(res => res.json())
+        .then(data => {
+            const listContainer = document.getElementById('videoList');
+            listContainer.innerHTML = '';
+            
+            data.forEach(video => {
+                const item = document.createElement('div');
+                item.className = 'video-item';
+                item.innerText = video.title;
+                item.onclick = () => playVideo(video);
+                listContainer.appendChild(item);
+            });
+        });
+
+    function playVideo(video) {
+        if (video.type === 'youtube') {
+            // Jika YouTube, gunakan provider Plyr
+            player.source = {
+                type: 'video',
+                sources: [{ src: video.url, provider: 'youtube' }],
+            };
+        } else if (video.type === 'drive') {
+            // Jika Google Drive, tembak ke link download direct
+            const directLink = `https://docs.google.com/uc?export=download&id=${video.url}`;
+            player.source = {
+                type: 'video',
+                sources: [{ src: directLink, type: 'video/mp4' }],
+            };
+        } else if (video.type === 'embed') {
+            // Untuk web lain yang pakai iframe embed
+            document.getElementById('player-container').innerHTML = `
+                <iframe src="${video.url}" allowfullscreen style="width:100%; height:450px; border:none;"></iframe>
+            `;
+        }
+    }
+</script>
+</body>
+</html>
